@@ -29,7 +29,7 @@ class OrganizationCreateView(CreateView):
 
 class OrganizationDeleteView(DeleteView):
     model = Organization
-    template_name = 'org_delete.html'
+    template_name = 'org_del.html'
     success_url = reverse_lazy('organization-list')
 
 class OrgMemberList(ListView):
