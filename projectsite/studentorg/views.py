@@ -25,6 +25,10 @@ def get_context_data(self, **kwargs):
     )
     
     context["students_joined_this_year"] = count
+
+    context["total_organizations"] = Organization.objects.count()
+    context["total_programs"] = Program.objects.count()
+
     return context
 
 class OrganizationList(ListView):
@@ -67,6 +71,27 @@ class OrgMemberList(ListView):
     context_object_name = 'orgmembers'
     template_name = 'orgmember_list.html'
     paginate_by = 5
+    ordering = ["student__lastname", "student__firstname"]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(
+                Q(student__firstname__icontains=query) |
+                Q(student__lastname__icontains=query) |
+                Q(organization__name__icontains=query)
+            )
+        return qs
+
+    def get_ordering(self):
+        allowed = ["student__lastname", "date_joined", "-date_joined"]
+        sort_by = self.request.GET.get("sort_by")
+        if sort_by in allowed:
+            return sort_by
+        return "student__lastname"
+
 
 class OrgMemberCreateView(CreateView):
     model = OrgMember
@@ -91,6 +116,18 @@ class StudentList(ListView):
     template_name = 'student_list.html'
     paginate_by = 5
 
+    def get_query(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(
+                Q(firstname__icontains=query) |
+                Q(lastname__icontains=query) 
+
+            )
+        return qs
+
 class StudentCreateView(CreateView):
     model = Student
     fields = '__all__'
@@ -113,6 +150,16 @@ class CollegeList(ListView):
     context_object_name = 'colleges'
     template_name = 'college_list.html'
     paginate_by = 5
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(
+                Q(college_name__icontains=query)
+            )
+        return qs
 
 class CollegeCreateView(CreateView):
     model = College
