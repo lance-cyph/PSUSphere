@@ -186,6 +186,13 @@ class ProgramList(ListView):
     template_name = 'program_list.html'
     paginate_by = 5
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        q = self.request.GET.get('q')
+        if q:
+            qs = qs.filter(Q(prog_name__icontains=q) | Q(college__college_name__icontains=q))
+        return qs
+
     def get_ordering(self):
         allowed = ["prog_name", "college__college_name"]
         sort_by = self.request.GET.get("sort_by")
