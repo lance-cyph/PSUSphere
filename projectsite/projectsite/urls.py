@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.urls import path
+from django.urls import path, include
 from studentorg import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")), # allauth routes
     path('', views.HomePageView.as_view(), name='home'),
     
     path('organization_list', views.OrganizationList.as_view(), name='organization-list'),
