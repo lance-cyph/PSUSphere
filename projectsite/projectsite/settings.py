@@ -32,7 +32,7 @@ else:
     DEBUG = True
     SITE_ID = 2  # Local site ID (127.0.0.1:8000)
 
-ALLOWED_HOSTS = ['lanica.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'lanica.pythonanywhere.com']
 
 
 # Application definition
