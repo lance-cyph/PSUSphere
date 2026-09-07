@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 from pathlib import Path
 import os
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,15 +26,19 @@ SECRET_KEY = 'django-insecure-%%126zqx+y-8$nn%ra((bcx!-$r&*e(mbje2^2&jhg)j)-58n_
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Automatically set DEBUG to False if running on PythonAnywhere
-if "PYTHONANYWHERE_DOMAIN" in os.environ:
+if "pythonanywhere" in socket.gethostname():
     DEBUG = False
-    SITE_ID = 1  # Production site ID on PythonAnywhere
+    SITE_ID = 2  # Production site ID on PythonAnywhere
 else:
     DEBUG = True
-    SITE_ID = 2  # Local site ID (127.0.0.1:8000)
+    SITE_ID = 3  # Local site ID (127.0.0.1:8000)
 
+AUTHENTICATION_BACKENDS = [
+'django.contrib.auth.backends.ModelBackend',
+'allauth.account.auth_backends.AuthenticationBackend',
+]
+    
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'lanica.pythonanywhere.com']
-
 
 # Application definition
 
@@ -45,11 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # Custom Apps
+    # Your custom apps
     'studentorg',
-    
-    # Third-party Apps
     'widget_tweaks',
+    
+    # Allauth apps
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -148,13 +153,18 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# django-allauth Settings
-LOGIN_URL = '/accounts/login/' 
-LOGIN_REDIRECT_URL = '/' 
-LOGOUT_REDIRECT_URL = '/accounts/login/' 
-ACCOUNT_LOGOUT_REDIRECT_URL = '/' 
-ACCOUNT_LOGOUT_ON_GET = True 
-ACCOUNT_LOGIN_METHODS = {"username", "email"} 
+LOGIN_URL = '/accounts/login/' # where @login_required will send users
+LOGIN_REDIRECT_URL = '/' # where to go after successful login
+LOGOUT_REDIRECT_URL = '/accounts/login/' # after logout, go back to login
+ACCOUNT_LOGOUT_REDIRECT_URL = '/' # where to redirect after logout
+ACCOUNT_LOGOUT_ON_GET = True # logout immediately on GET
+ACCOUNT_LOGIN_METHODS = {"username", "email"} # allow login with username OR email
+ACCOUNT_SIGNUP_FIELDS = [
+    "username*",
+    "email*",
+    "password1*",
+    "password2*",
+]
 
 # Corrected allauth signup field requirements
 ACCOUNT_EMAIL_REQUIRED = True
