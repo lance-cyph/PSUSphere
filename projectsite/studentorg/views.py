@@ -126,7 +126,8 @@ class StudentList(ListView):
             qs = qs.filter(
                 Q(firstname__icontains=query) |
                 Q(lastname__icontains=query) |
-                Q(program__prog_name__icontains=query)
+                Q(program__prog_name__icontains=query) |
+                Q(student_id__icontains=query)
             )
         return qs
 
