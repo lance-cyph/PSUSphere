@@ -83,7 +83,8 @@ class OrgMemberList(ListView):
             qs = qs.filter(
                 Q(student__firstname__icontains=query) |
                 Q(student__lastname__icontains=query) |
-                Q(organization__name__icontains=query)
+                Q(organization__name__icontains=query) |
+                Q(date_joined__icontains=query)
             )
         return qs
 
